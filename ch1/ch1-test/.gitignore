@@ -35,5 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
-!/build.gradle
-!/.idea/
+
+### test ###
+/build.gradle
+/.idea/
