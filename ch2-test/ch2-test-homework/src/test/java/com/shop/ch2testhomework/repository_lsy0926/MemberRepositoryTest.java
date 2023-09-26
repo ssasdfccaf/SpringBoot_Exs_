@@ -1,13 +1,18 @@
 package com.shop.ch2testhomework.repository_lsy0926;
 
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shop.ch2testhomework.constant_lsy0926.UserRole;
 import com.shop.ch2testhomework.entity_lsy0926.Member;
+import com.shop.ch2testhomework.entity_lsy0926.QMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +25,10 @@ class MemberRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    // 영속성 컨텍스트 기능 이용하기위한, 엔티티 매니저 인스턴스
+    @PersistenceContext
+    EntityManager em;
 
 
     @Test
@@ -48,7 +57,7 @@ class MemberRepositoryTest {
             member.setUserEmail("lsy"+i+"@naver.com");
             member.setUserRole(UserRole.ADMIN);
             member.setRegTime(LocalDateTime.now());
-            Member savedMember = memberRepository.save(member);
+            memberRepository.save(member);
 
         }
     }
@@ -64,16 +73,16 @@ class MemberRepositoryTest {
         }
     }
 
-    @Test
-    void findByUserDescription() {
-
-        this.createMemberList();
-        List<Member> memberList = memberRepository.findByUserDescription("실습 풀이중1");
-        for(Member member : memberList){
-            System.out.println(member.toString());
-            System.out.println("이름 확인 해보기 : "+member.getUserNm());
-        }
-    }
+//    @Test
+//    void findByUserDescription() {
+//
+//        this.createMemberList();
+//        List<Member> memberList = memberRepository.findByUserDescription("실습 풀이중1");
+//        for(Member member : memberList){
+//            System.out.println(member.toString());
+//            System.out.println("이름 확인 해보기 : "+member.getUserNm());
+//        }
+//    }
 
     @Test
     @DisplayName("유저명, 유저소개 or 테스트")
@@ -89,5 +98,75 @@ class MemberRepositoryTest {
         }
     }
 
+    @Test
+    @DisplayName("@Query를 이용한 유저 조회 테스트")
+    public void findByUserDescription(){
+        this.createMemberList();
+        List<Member> memberList =
+                memberRepository.findByUserDescription("실습 풀이중7");
+        for(Member member : memberList){
+            System.out.println(member.toString());
+        }
+    }
+
+    @Test
+    @DisplayName("@Query를 이용한 상유저 조회 테스트 native 속성 사용")
+    public void findByUserDescriptionTest(){
+        //this.createMemberList();
+        List<Member> memberList =
+                memberRepository.findByUserDescriptionByNative("실습 풀이중7");
+        for(Member member : memberList){
+            System.out.println(member.toString());
+        }
+    }
+
+
+    /*Querydsl 테스트 추가 부분*/
+    /*사용시 추가 해야하는 사항 2가지 있고,
+    1) 의존성 1개
+    2) 플러그인 1개*/
+
+    /*pom.xml 추가 확인
+    <!--쿼리 dsl 추가1 ~ 2-->*/
+
+    @Test
+    @DisplayName("Querydsl 조회 테스트1")
+    public void queryDslTest(){
+        this.createMemberList2();
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QMember qMember = QMember.member;
+        JPAQuery<Member> query  = queryFactory.selectFrom(qMember)
+                .where(qMember.userRole.eq(UserRole.USER))
+                .where(qMember.userDescription.like("%" + "실습 풀이중" + "%"))
+                .orderBy(qMember.regTime.desc());
+
+        List<Member> memberList = query.fetch();
+
+        for(Member member : memberList){
+            System.out.println(member.toString());
+        }
+    }
+
+    public void createMemberList2(){
+        for(int i=1;i<=5;i++){
+            Member member = new Member();
+            member.setUserNm("이상용"+i);
+            member.setUserDescription("실습 풀이중" +i);
+            member.setUserEmail("lsy"+i+"@naver.com");
+            member.setUserRole(UserRole.ADMIN);
+            member.setRegTime(LocalDateTime.now());
+            memberRepository.save(member);
+        }
+
+        for(int i=6;i<=10;i++){
+            Member member = new Member();
+            member.setUserNm("이상용"+i);
+            member.setUserDescription("실습 풀이중" +i);
+            member.setUserEmail("lsy"+i+"@naver.com");
+            member.setUserRole(UserRole.USER);
+            member.setRegTime(LocalDateTime.now());
+            memberRepository.save(member);
+        }
+    }
 
 }
