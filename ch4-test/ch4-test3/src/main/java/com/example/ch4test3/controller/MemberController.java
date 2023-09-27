@@ -33,6 +33,7 @@ public class MemberController {
     public String newMember(@Valid MemberFormDto memberFormDto, BindingResult bindingResult, Model model){
 
         if(bindingResult.hasErrors()){
+            System.out.println("bindingResult toString() : " + bindingResult.toString());
             return "member/memberForm";
         }
 
