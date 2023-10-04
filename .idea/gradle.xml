@@ -11,6 +11,14 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ch5-test/ch5-test1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/ch5-test/ch5-test1" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
