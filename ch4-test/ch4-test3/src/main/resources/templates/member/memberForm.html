@@ -4,6 +4,7 @@
       layout:decorate="~{layouts/layout1}">
 
 <!-- 사용자 CSS 추가 -->
+<!--th:block : if , unless , 특정 조건의 영역에서 확인하는 용도-->
 <th:block layout:fragment="css">
     <style>
         .fieldError {
@@ -27,10 +28,11 @@
 </th:block>
 
 <div layout:fragment="content">
-
+    <!--th:object="${memberFormDto} - 서버에 , 모델 박스에 자동 매핑.-->
     <form action="/members/new" role="form" method="post"  th:object="${memberFormDto}">
         <div class="form-group">
             <label th:for="name">이름</label>
+            <!--th:field="*{name}" 서버에 전달한 변수 지정-->
             <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력해주세요">
             <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect data</p>
         </div>
