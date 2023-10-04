@@ -1,8 +1,9 @@
 package com.example.ch5test.controller;
 
-import com.shop.dto.MemberFormDto;
-import com.shop.entity.Member;
-import com.shop.service.MemberService;
+
+import com.example.ch5test.dto.MemberFormDto;
+import com.example.ch5test.entity.Member;
+import com.example.ch5test.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

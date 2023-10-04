@@ -1,6 +1,7 @@
 package com.example.ch5test.entity;
 
-import com.shop.repository.MemberRepository;
+
+import com.example.ch5test.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
