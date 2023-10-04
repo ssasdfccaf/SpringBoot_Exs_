@@ -2,36 +2,22 @@ package com.example.ch2test.repository;
 
 import com.example.ch2test.constant.ItemSellStatus;
 import com.example.ch2test.entity.Item;
-import com.example.ch2test.entity.QItem;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.Querydsl;
-import org.springframework.test.context.TestPropertySource;
-import org.thymeleaf.util.StringUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 // JUnit5 , 단위 테스트를 하기위한 외부기능.
 // 테스트 클래스임을 시스템에게 알려줌. 단위 테스트 용도로 사용이됨.
+
 @SpringBootTest
 // 테스트를 하기위한 , 설정 파일을 분리했고, 로드.
 @TestPropertySource(locations = "classpath:application-test.properties")
 class ItemRepositoryTest {
 
     @Autowired
-    ItemRepository itemRepository;
+    com.example.ch2test.repository.ItemRepository itemRepository;
 
 
     // 영속성 컨텍스트 기능 이용하기위한, 엔티티 매니저 인스턴스
