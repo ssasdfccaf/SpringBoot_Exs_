@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter @Setter
 public abstract class BaseTimeEntity {
-
+    // 1 등록시간 , 2 수정시간
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime regTime;
