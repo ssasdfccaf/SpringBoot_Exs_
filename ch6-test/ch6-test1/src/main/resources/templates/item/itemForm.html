@@ -28,6 +28,8 @@
                     return;
                 }
 
+                // 파일의 이미지를 등록시, 형제 태그
+                // 같은 부모 태그의 하위에 있는 태그를 말함.
                 $(this).siblings(".custom-file-label").html(fileName);
             });
         }
