@@ -68,10 +68,13 @@ public class ItemService {
         return itemFormDto;
     }
 
+    // 상품 수정을  처리하는 로직.
     public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
-        //상품 수정
+        //상품 수정,
+        // 기존 아이템 정보를 불러오기.
         Item item = itemRepository.findById(itemFormDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
+        // 기존 아이템에 내용에 , 더티 체킹. 변경사항에 대해서, 영속성이 알아서 자동으로 처리.
         item.updateItem(itemFormDto);
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 

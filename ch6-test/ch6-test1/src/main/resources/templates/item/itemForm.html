@@ -61,7 +61,7 @@
             상품 등록
         </p>
 
-        <input type="hidden" th:field="*{id}">
+        <input type="text" th:field="*{id}">
 
         <div class="form-group">
             <select th:field="*{itemSellStatus}" class="custom-select">
@@ -102,6 +102,8 @@
         </div>
         <p th:if="${#fields.hasErrors('itemDetail')}" th:errors="*{itemDetail}" class="fieldError">Incorrect data</p>
 
+
+        <!--이미지가 비워 있다면, 등록-->
         <div th:if="${#lists.isEmpty(itemFormDto.itemImgDtoList)}">
             <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">
                 <div class="custom-file img-div">
@@ -111,6 +113,7 @@
             </div>
         </div>
 
+        <!--상품의 이미지 dto를 가지고 있다면, 수정-->
         <div th:if = "${not #lists.isEmpty(itemFormDto.itemImgDtoList)}">
             <div class="form-group" th:each="itemImgDto, status: ${itemFormDto.itemImgDtoList}">
                 <div class="custom-file img-div">
@@ -121,6 +124,7 @@
             </div>
         </div>
 
+        <!--상품의 아이디가 없다면 등록, 있다면 수정-->
         <div th:if="${#strings.isEmpty(itemFormDto.id)}" style="text-align: center">
             <button th:formaction="@{/admin/item/new}" type="submit" class="btn btn-primary">저장</button>
         </div>

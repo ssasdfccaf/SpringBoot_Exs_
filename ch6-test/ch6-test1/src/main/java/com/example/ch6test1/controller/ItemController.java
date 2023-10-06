@@ -29,12 +29,14 @@ public class ItemController {
 
     private final ItemService itemService;
 
+   // 상품 등록 폼
     @GetMapping(value = "/admin/item/new")
     public String itemForm(Model model){
         model.addAttribute("itemFormDto", new ItemFormDto());
         return "item/itemForm";
     }
 
+    // 상품 등록 처리
     @PostMapping(value = "/admin/item/new")
     public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
                           Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
@@ -58,13 +60,17 @@ public class ItemController {
         return "redirect:/";
     }
 
+    // 상품의 상세 페이지 폼
     @GetMapping(value = "/admin/item/{itemId}")
     public String itemDtl(@PathVariable("itemId") Long itemId, Model model){
 
         try {
+            // 예) 상품번호가 50번으로, 실제 디비에서 조회 후, 내용을 dto 담기.
             ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+            // dto 담은 내용을 모델 인스턴스에 담아서, 뷰로 전달.
             model.addAttribute("itemFormDto", itemFormDto);
         } catch(EntityNotFoundException e){
+            // 유효성, 체크.
             model.addAttribute("errorMessage", "존재하지 않는 상품 입니다.");
             model.addAttribute("itemFormDto", new ItemFormDto());
             return "item/itemForm";
@@ -73,19 +79,24 @@ public class ItemController {
         return "item/itemForm";
     }
 
+    // 상품의 상세 페이지에서 수정시 처리
     @PostMapping(value = "/admin/item/{itemId}")
     public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
                              @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList, Model model){
+// 일반 데이터 기본 유효성 체크.
         if(bindingResult.hasErrors()){
             return "item/itemForm";
         }
-
+// 첫 이미지 등록 의무. 유효성 체크.
         if(itemImgFileList.get(0).isEmpty() && itemFormDto.getId() == null){
             model.addAttribute("errorMessage", "첫번째 상품 이미지는 필수 입력 값 입니다.");
             return "item/itemForm";
         }
 
         try {
+            // 일반, 파일 데이터를 전달함.
+            // 경우의 수 4가지.
+            // 일반 0 , 파일 x ,
             itemService.updateItem(itemFormDto, itemImgFileList);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 수정 중 에러가 발생하였습니다.");

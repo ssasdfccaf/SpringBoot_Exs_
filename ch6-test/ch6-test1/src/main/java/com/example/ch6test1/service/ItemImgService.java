@@ -46,7 +46,8 @@ public class ItemImgService {
             ItemImg savedItemImg = itemImgRepository.findById(itemImgId)
                     .orElseThrow(EntityNotFoundException::new);
 
-            //기존 이미지 파일 삭제
+            //기존 이미지 파일 삭제, 물리 저장소의 내용을 지우기.
+            // 디비, 디비에는 삭제가 파일명을 대체.
             if(!StringUtils.isEmpty(savedItemImg.getImgName())) {
                 fileService.deleteFile(itemImgLocation+"/"+
                         savedItemImg.getImgName());
