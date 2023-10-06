@@ -64,20 +64,29 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     @Override
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
 
+        // Querydsl
+        // 통계 , 복잡한 쿼리 검색시 사용함. 1) 자동완성, 2) 문법체크등, ide 도움을 받기.
         QueryResults<Item> results = queryFactory
                 .selectFrom(QItem.item)
+                // 조건절을 명시, 별말 없으면, and 조건으로
                 .where(regDtsAfter(itemSearchDto.getSearchDateType()),
                         searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
                         searchByLike(itemSearchDto.getSearchBy(),
                                 itemSearchDto.getSearchQuery()))
+                // 정렬 조건.,  최신 상품 순서로
                 .orderBy(QItem.item.id.desc())
+                // 페이징의 페이지 번호 위치. 0
                 .offset(pageable.getOffset())
+                // 최대로 보여 줄 페이지 갯수, 6개
                 .limit(pageable.getPageSize())
+                // 호출시, 실행되어서 데이터 받아옴.
                 .fetchResults();
 
+        // 검색 조건에 의해서 검색 된 결과 데이터 들(페이징 처리가 됨.)
         List<Item> content = results.getResults();
+        // 검색 조건의 결과의 총 갯수.
         long total = results.getTotal();
-
+        // 검색 결과 데이터들과, 페이징의 조건, 전체 갯수를 반환.
         return new PageImpl<>(content, pageable, total);
     }
 
@@ -92,6 +101,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
 
         QueryResults<MainItemDto> results = queryFactory
                 .select(
+                        // @QueryProjection 의 생성자를 이용해서,
+                        // 바로 검색 조건으로 자동 매핑을 해줌.
                         new QMainItemDto(
                                 item.id,
                                 item.itemNm,
