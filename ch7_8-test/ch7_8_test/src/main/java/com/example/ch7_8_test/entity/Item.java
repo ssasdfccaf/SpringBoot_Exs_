@@ -46,6 +46,7 @@ public class Item extends BaseEntity {
         this.itemSellStatus = itemFormDto.getItemSellStatus();
     }
 
+    // 주문시, 재고 수량 - 주문 수량 , 로직.
     public void removeStock(int stockNumber){
         int restStock = this.stockNumber - stockNumber;
         if(restStock<0){
