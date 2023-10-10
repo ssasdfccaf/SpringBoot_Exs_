@@ -13,25 +13,31 @@
 
     <script th:inline="javascript">
 
+        /*해당 문서가 준비가 될때에, 해당 속상의 인풋 값이 변경시 마다 호출*/
         $(document).ready(function(){
             $("input[name=cartChkBox]").change( function(){
                 getOrderTotalPrice();
             });
         });
 
+        // 체크박스 속성이 변경시 마다, 전체 가격 계산을,
+        // ajax , 비동기식으로 , 웹 브라우저 -> 서버 방향으로 전달.
+        // 이러한 기법은 , 웹에서 매우 많이 활용이 됨.
         function getOrderTotalPrice(){
             var orderTotalPrice = 0;
             $("input[name=cartChkBox]:checked").each(function() {
                 var cartItemId = $(this).val();
+                // 장바구니에 담긴 상품의 가격을 구분 짓는 요령. = 상태변수.
                 var price = $("#price_" + cartItemId).attr("data-price");
                 var count = $("#count_" + cartItemId).val();
                 orderTotalPrice += price*count;
             });
-
+ // 전체 가격을, jQuery 이용해서, 속성 내용을 주입.
             $("#orderTotalPrice").html(orderTotalPrice+'원');
         }
 
         function changeCount(obj){
+            // obj : 체크박스에서 선택이된 요소를 의미
             var count = obj.value;
             var cartItemId = obj.id.split('_')[1];
             var price = $("#price_" + cartItemId).data("price");
@@ -50,24 +56,35 @@
             getOrderTotalPrice();
         }
 
+        // 매우 중요함, 이 패턴 잘 학습해서, 응용 많이 하기.
         function updateCartItemCount(cartItemId, count){
+            // 서버에 전달시, 헤더에 토큰 추가하는 작업.
+            // 시큐리티에서는 , 항상 검사를 함. 옵션으로 변경 가능.
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
-
+            // 서버에서 매핑할 주소.
             var url = "/cartItem/" + cartItemId+"?count=" + count;
 
+            // ajax 웹 -> 서버, 비동기 통신 방식으로 전달.
             $.ajax({
                 url      : url,
                 type     : "PATCH",
+                // xhr : xml http request ,
+                // 레스트 형식으로 전달 할 때, 많이 이용되는 방식.
+                // 전달 하기 전에, 헤더의 토큰을 담아서 서버에 보내고
+                // 응답이 무사히 오면, 그다음 진행을 함.
                 beforeSend : function(xhr){
                     /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
                     xhr.setRequestHeader(header, token);
                 },
+                // 웹 -> 서버 전달 타입 지정.
                 dataType : "json",
                 cache   : false,
                 success  : function(result, status){
                     console.log("cartItem count update success");
                 },
+                // jqXHR , jQuery 용 xml http request ,
+                // 레스트 형식으로 전달시 사용이 되는 인스턴스.
                 error : function(jqXHR, status, error){
 
                     if(jqXHR.status == '401'){

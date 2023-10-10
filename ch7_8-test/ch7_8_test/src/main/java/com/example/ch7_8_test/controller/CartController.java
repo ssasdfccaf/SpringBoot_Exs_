@@ -50,12 +50,15 @@ public class CartController {
     }
 
     @GetMapping(value = "/cart")
+    // 서버 -> 웹 브라우저로 전달. 모델에 담아서, 뷰 + 모델로 전달.
     public String orderHist(Principal principal, Model model){
         List<CartDetailDto> cartDetailList = cartService.getCartList(principal.getName());
         model.addAttribute("cartItems", cartDetailList);
         return "cart/cartList";
     }
 
+    // 부분 수정을 할 때 사용되는 부분,
+    // 현재, 가격의 변화 부분을 레스트로 데이터만 전달하고 있음.
     @PatchMapping(value = "/cartItem/{cartItemId}")
     public @ResponseBody ResponseEntity updateCartItem(@PathVariable("cartItemId") Long cartItemId, int count, Principal principal){
 
@@ -81,6 +84,8 @@ public class CartController {
         return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
     }
 
+    // 주문에서는 , 해당 상품만 주문을 했다면,
+    // 장바구니에, 다른 상품들도 다 같이 주문을 할수 있음.
     @PostMapping(value = "/cart/orders")
     public @ResponseBody ResponseEntity orderCartItem(@RequestBody CartOrderDto cartOrderDto, Principal principal){
 
